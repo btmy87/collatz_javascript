@@ -14,35 +14,47 @@
 
   <script type="text/javascript">
 
-    const N = 5e6;
+    const N = 1e7;
+    const nWorkers = 8;
+    const chunkSize = N/nWorkers/4;
     function init() {
       console.log("In function `init`");
       // initialize chart
       chart = init_chart();
-      make_chart(chart);
+      const workers = [];
+      for (let j = 0; j < nWorkers; j++) {
+        let myWorker = new Worker("./worker.js");
+        myWorker.onmessage = (e) => {make_chart(chart, e, myWorker)};
+        console.log("Launching worker at start: ", 1+j*chunkSize);
+        myWorker.postMessage({start: 1+j*chunkSize, chunkSize: chunkSize});
+        workers.push(myWorker);
+      }
     }
 
-    function make_chart(chart) {
-      var tempData = new Int32Array(2*N);
-      for (let i = 0; i < N; i++) {
-        tempData[2*i] = i+1;
-        tempData[2*i+1] = collatz(i+1);
-        i++;
+    function make_chart(chart, e, myWorker) {
+      chart.appendData({ seriesIndex: 0, data: e.data });
+      let k = e.data[0] + chunkSize*nWorkers;
+      //i = i + chunkSize*nWorkers;
+      if (k < N) {
+        console.log("Launching worker at start: ", k);
+        myWorker.postMessage({start: k, chunkSize: chunkSize});
+      } else {
+        //myWorker.terminate();
       }
-      chart.appendData({ seriesIndex: 0, data: tempData });
-      chart.resize();
     }
 
     function init_chart() {
       myChart = echarts.init(document.getElementById('main'), 'mytheme');
       option = {
         title: { text: "Collatz JavaScript" },
-        xAxis: { type: "value" },
+        xAxis: { type: "value", min: 0, max: N },
         yAxis: {
           name: "Lenght of Collatz Sequence", 
           nameLocation: "middle",
           type: "value",
-          nameGap: 30
+          nameGap: 30,
+          min: 0,
+          max: 500
         },
         series: [
           { 
@@ -51,7 +63,7 @@
             symbol: 'circle',
             symbolSize: 2,
             data: new Int32Array(),
-            progressive: N/50
+            progressive: chunkSize/10
           },
         ]
       };
@@ -59,16 +71,6 @@
       return myChart;
     }
 
-    function collatz(k) {
-      if (k == 1) {
-        out = 1;
-      } else if (k%2==0) {
-        out = 1 + collatz(k/2);
-      } else {
-        out = 1 + collatz((3*k+1)/2);
-      }
-      return out;
-    }
     function myresize() {
       myChart.resize();
     }

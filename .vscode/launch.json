@@ -4,6 +4,13 @@
       "type": "chrome",
       "request": "launch",
       "name": "Debug with Chrome",
+      "url": "${workspaceFolder}/collatz_echarts.html",
+      "runtimeArgs": ["--allow-file-access-from-files"]
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Debug with Edge",
       "url": "${workspaceFolder}/collatz_echarts.html"
     }
   ]
