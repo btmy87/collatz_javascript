@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug with Chrome",
+      "url": "${workspaceFolder}/collatz_echarts.html"
+    }
+  ]
+}

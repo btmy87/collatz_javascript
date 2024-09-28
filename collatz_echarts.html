@@ -14,6 +14,7 @@
 
   <script type="text/javascript">
 
+    const N = 5e6;
     function init() {
       console.log("In function `init`");
       // initialize chart
@@ -22,8 +23,7 @@
     }
 
     function make_chart(chart) {
-      const N = 1e6;
-      var tempData = new Float64Array(2*N);
+      var tempData = new Int32Array(2*N);
       for (let i = 0; i < N; i++) {
         tempData[2*i] = i+1;
         tempData[2*i+1] = collatz(i+1);
@@ -46,10 +46,12 @@
         },
         series: [
           { 
+            animation: false,
             type: 'scatterGL', 
             symbol: 'circle',
             symbolSize: 2,
-            data: new Float64Array()
+            data: new Int32Array(),
+            progressive: N/50
           },
         ]
       };
