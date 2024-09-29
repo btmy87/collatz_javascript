@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
-  <script src="mytheme.js"></script>
+  <!--<script src="mytheme.js"></script>-->
   <style>
     body {
       background-color: black
@@ -14,7 +14,7 @@
 
   <script type="text/javascript">
 
-    const N = 1e7;
+    const N = 5e6;
     const nWorkers = 8;
     const chunkSize = N/nWorkers/4;
     function init() {
@@ -56,14 +56,18 @@
           min: 0,
           max: 500
         },
+        dataZoom: [ {type: 'slider', xAxisIndex: [0] } ],
         series: [
           { 
             animation: false,
+            animationDelay: 50,
+            animationDuration: 50,
+            animationEasing: 'cubicInOut',
             type: 'scatterGL', 
             symbol: 'circle',
             symbolSize: 2,
             data: new Int32Array(),
-            progressive: chunkSize/10
+            progressive: chunkSize
           },
         ]
       };
